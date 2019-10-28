@@ -51,6 +51,7 @@ getUser(email)
           return;
         } else {
           let interval = setInterval(() => {
+            // Fetch current price of item
             console.log('Fetching current price...');
             rp(trackedItem.url, { gzip: true }).then(html => {
               var price = $(
@@ -65,6 +66,7 @@ getUser(email)
               console.log(`Target price is ${trackedItem.targetPrice}`);
               const hasPriceDropped = currentPrice <= trackedItem.targetPrice;
               if (hasPriceDropped) {
+                // If price has dropped, send email
                 console.log(
                   'Price has dropped! Congratulations! Stopping tracking..'
                 );
@@ -73,6 +75,7 @@ getUser(email)
                 console.log(`Trying again in ${intervalTime / 1000} seconds`);
               }
             });
+            // Start interval of 1 hour
           }, intervalTime);
         }
       }
@@ -82,10 +85,6 @@ getUser(email)
     }
   )
   .catch(err => console.error(err));
-
-// Start interval of 1 hour
-// Fetch current price of item
-// If price has dropped, send email
 
 function getUser(username) {
   const params = {
