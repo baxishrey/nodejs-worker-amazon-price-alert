@@ -1,5 +1,4 @@
 // REQUIRES
-const yargs = require('yargs');
 const AWS = require('aws-sdk');
 const rp = require('request-promise');
 const $ = require('cheerio');
@@ -11,23 +10,19 @@ const docClient = new AWS.DynamoDB.DocumentClient({ apiVersion: '2012-08-10' });
 const tableName = 'user-price-items';
 const intervalTime = 30000;
 
-const args = yargs
-  .option('email', {
-    alias: 'e',
-    describe: 'Username or email',
-    type: 'string'
-  })
-  .option('item-id', {
-    alias: 'i',
-    describe: 'ID of the item to monitor',
-    type: 'string'
-  })
-  .demandOption(['email', 'item-id'])
-  .help().argv;
+// Get username (email) and item id from environment variables
+const email = process.env.email;
+const itemId = process.env.item_id;
 
-// Get username (email) and item id from command line args
-const email = args.e;
-const itemId = args.i;
+if (!email) {
+  console.log('Email is required');
+  return;
+}
+
+if (!itemId) {
+  console.log('Item ID is required');
+  return;
+}
 
 let trackedItem = undefined;
 
