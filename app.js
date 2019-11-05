@@ -31,7 +31,6 @@ console.log('Fetching tracked item...');
 getUser(email)
   .then(
     data => {
-      console.log('Testing role for ECS');
       const item = data.Item;
       if (!item) {
         console.error(`No items found for username ${email}`);
