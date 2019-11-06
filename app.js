@@ -34,6 +34,7 @@ async function checkPrice() {
     var price = $('[id=priceblock_ourprice],[id=priceblock_dealprice]', html)
       .text()
       .trim();
+    console.log(price);
     price = price.replace(/[\u20B9]/g, '').trim();
     var currentPrice = parseFloat(price.replace(',', ''));
     console.log(`Current price is ${currentPrice}`);
