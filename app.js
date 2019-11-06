@@ -30,7 +30,7 @@ async function checkPrice() {
   // Fetch current price of item
   console.log('Fetching current price...');
   try {
-    const html = await rp(url);
+    const html = await rp(url, { gzip: true });
     var price = $('[id=priceblock_ourprice],[id=priceblock_dealprice]', html)
       .text()
       .trim();
