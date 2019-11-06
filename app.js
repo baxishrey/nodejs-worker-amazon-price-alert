@@ -6,7 +6,6 @@ const $ = require('cheerio');
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config();
 }
-console.log(process.env.NODE_ENV);
 
 AWS.config.update({ region: 'us-east-1' });
 
@@ -15,7 +14,7 @@ const intervalTime = 30000;
 
 // Get username (email) and item id from environment variables
 const url = process.env.url;
-const targetPrice = process.env.targetPrice;
+const targetPrice = parseInt(process.env.targetPrice);
 
 if (!url) {
   console.log('URL is required');
@@ -27,7 +26,7 @@ if (!targetPrice) {
   return;
 }
 
-let interval = setInterval(async () => {
+async function checkPrice() {
   // Fetch current price of item
   console.log('Fetching current price...');
   try {
@@ -50,4 +49,6 @@ let interval = setInterval(async () => {
   } catch (err) {
     console.log(err);
   }
-}, intervalTime);
+}
+checkPrice();
+let interval = setInterval(checkPrice, intervalTime);
