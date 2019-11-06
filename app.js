@@ -31,12 +31,19 @@ async function checkPrice() {
   console.log('Fetching current price...');
   try {
     const html = await rp(url, { gzip: true });
-    var price = $('[id=priceblock_ourprice],[id=priceblock_dealprice]', html)
+    var price = $(
+      '[id=priceblock_ourprice],[id=priceblock_dealprice],[id=priceblock_saleprice]',
+      html
+    )
       .text()
       .trim();
-    console.log(price);
     price = price.replace(/[\u20B9]/g, '').trim();
     var currentPrice = parseFloat(price.replace(',', ''));
+    if (isNaN(currentPrice)) {
+      console.log('Unable to fetch current price');
+      clearInterval(interval);
+      return;
+    }
     console.log(`Current price is ${currentPrice}`);
     console.log(`Target price is ${targetPrice}`);
     const hasPriceDropped = currentPrice <= targetPrice;
