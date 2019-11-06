@@ -1,13 +1,10 @@
 // REQUIRES
-const AWS = require('aws-sdk');
 const rp = require('request-promise');
 const $ = require('cheerio');
 
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config();
 }
-
-AWS.config.update({ region: 'us-east-1' });
 
 // CONSTANTS
 const intervalTime = 30000;
