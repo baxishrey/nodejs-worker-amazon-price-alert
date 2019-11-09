@@ -22,6 +22,7 @@ if (!targetPrice) {
   console.log('Target price is required');
   return;
 }
+let retryCount = 0;
 
 async function checkPrice() {
   // Fetch current price of item
@@ -53,6 +54,13 @@ async function checkPrice() {
     }
   } catch (err) {
     console.log(err);
+    if (retryCount <= 5) {
+      retryCount++;
+      console.log(
+        `Error in fetching current price. Retrying.... ${retryCount} of 5`
+      );
+      checkPrice();
+    }
   }
 }
 checkPrice();
