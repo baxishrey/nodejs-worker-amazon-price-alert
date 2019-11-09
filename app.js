@@ -7,7 +7,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 // CONSTANTS
-const intervalTime = 30000;
+const intervalTime = 60000;
 
 // Get username (email) and item id from environment variables
 const url = process.env.url;
@@ -54,14 +54,25 @@ async function checkPrice() {
     }
   } catch (err) {
     console.log(err);
-    if (retryCount <= 5) {
-      retryCount++;
-      console.log(
-        `Error in fetching current price. Retrying.... ${retryCount} of 5`
-      );
-      checkPrice();
-    }
+    throw err;
   }
 }
-checkPrice();
-let interval = setInterval(checkPrice, intervalTime);
+try {
+  checkPrice();
+} catch (err) {
+  retryCount++;
+  console.log(
+    `Error in fetching current price. Retrying.... ${retryCount} of 5`
+  );
+}
+
+let interval = setInterval(() => {
+  try {
+    checkPrice();
+  } catch (err) {
+    retryCount++;
+    console.log(
+      `Error in fetching current price. Retrying.... ${retryCount} of 5`
+    );
+  }
+}, intervalTime);
