@@ -23,17 +23,41 @@ if (!targetPrice) {
   return;
 }
 let retryCount = 0;
+let proxies = [];
+
+async function loadProxies() {
+  const html = await rp('https://free-proxy-list.net/', { gzip: true });
+
+  const rows = $('#proxylisttable tr', html);
+
+  rows.each((index, row) => {
+    const ip = $('td:nth-child(1)', row)
+      .text()
+      .trim();
+    const port = $('td:nth-child(2)', row)
+      .text()
+      .trim();
+
+    if (ip && port) {
+      proxies.push(`http://${ip}:${port}`);
+    }
+  });
+}
 
 async function checkPrice() {
   // Fetch current price of item
   console.log('Fetching current price...');
+  const rand = Math.floor(Math.random() * proxies.length - 1);
+
+  let proxy = proxies[rand];
   try {
     const html = await rp(url, {
       gzip: true,
       headers: {
         'User-Agent':
           'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.97 Safari/537.36'
-      }
+      },
+      proxy: proxy
     });
     var price = $(
       '[id=priceblock_ourprice],[id=priceblock_dealprice],[id=priceblock_saleprice]',
@@ -64,6 +88,7 @@ async function checkPrice() {
   }
 }
 try {
+  loadProxies();
   checkPrice();
 } catch (err) {
   retryCount++;
